@@ -100,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$document) {
         # code...
         $documentError= ' your file required!';
-
     }
 
     if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
@@ -108,31 +107,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (upload($_FILES['document'])  === "Done") {
             # code...
-            $folderupload = 'fileupload';
+            $folderupload = 'uploads';
 
             if (!is_dir($folderupload)) {
                 # code...
-                mkdir($folderupload,0775);
+                mkdir($folderupload, 0775);
             }
-                $namefile = $_FILES['document']['name'];
+            $namefile = $_FILES['document']['name'];
 
-                $filepath = $folderupload . '/' . $namefile;
+            $filepath = $folderupload . '/' . $namefile;
 
-                if (file_exists($filepath)){
-                    # code...
-                    echo "Sorry, file already exists.";
-
-                }else {
-                    
-                    move_uploaded_file($_FILES['document']['tmp_name'],$filepath);
-
-                }
-
-            
-        }else{
+            if (file_exists($filepath)) {
+                # code...
+                echo "Sorry, file already exists.";
+            } else {
+                move_uploaded_file($_FILES['document']['tmp_name'], $filepath);
+            }
+        } else {
             $documentError= upload($_FILES['document']);
         }
-
     }
 }
 ?>
@@ -163,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="document">Doucment</label>
-                <input type="file" class="form-control" name="document" >
+                <input type="file" class="form-control" name="document">
                 <span class="text-danger"><?php echo $documentError?></span>
             </div>
             <div class="form-group col-md-6">
