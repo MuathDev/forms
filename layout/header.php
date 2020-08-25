@@ -1,4 +1,8 @@
-<?php require_once __DIR__. '/../config/app.php'?>
+<?php require_once __DIR__. '/../config/app.php';
+
+session_start();
+
+?>
 
 <!DOCTYPE html>
 <html <?php echo $config['lang'] ?> <?php $config['dir']?>>

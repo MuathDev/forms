@@ -2,132 +2,13 @@
 $title= 'contect';
 require_once 'layout/header.php';
 
-function filterString($fieldstring)
-{
+require_once('include/uploader.php');
 
-     // Remove all illegal characters from String
-    $fieldstring = filter_var(trim($fieldstring), FILTER_SANITIZE_STRING);
 
-    // return $fieldstring;
-
-    if (empty($fieldstring)) {
-        # code...
-        return false;
-    } else {
-        # code...
-        return $fieldstring;
-    }
+if (isset($_SESSION['contact-forms'])) {
+    print_r($_SESSION['contact-forms']);
 }
 
-function filterEmail($fieldemail)
-{
-
-    // Remove all illegal characters from email
-    $fieldemail = filter_var(trim($fieldemail), FILTER_SANITIZE_EMAIL);
-
-    // Validate e-mail
-    if (filter_var($fieldemail, FILTER_VALIDATE_EMAIL)) {
-        return $fieldemail;
-    } else {
-        return false;
-    }
-}
-
-function upload($filedocument)
-{
-    $filesallowed = [
-        'jpg'=>'image/jpeg',
-        'png'=>'image/png',
-        'gif'=>'image/gif'
-    ];
-
-    $maxsize = 780*1024;
-    $byte= "byte";
-
-    //for real file extinsion  uplode on serve
-    $fileupload =  mime_content_type($filedocument['tmp_name']);
-  
-    //if file  empte
-    if (empty($fileupload)) {
-        # code...
-        return false;
-    }
-    
-    //file size upload
-    $filesizeupload= $filedocument['size'];
-
-
-    if (!in_array($fileupload, $filesallowed)) {
-        return "sorry the file not work";
-    } elseif ($filesizeupload>$maxsize) {
-        return "size file not work must less than $maxsize$byte ";
-    } else {
-        return  "Done";
-    }
-}
-
-
-$emailError=" ";
-$nameError=' ';
-$documentError=' ';
-$massegeError=" ";
-
-$name = $email = $message = $document = " ";
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    # code...
-
- 
-    //Validate
-    $name =filterString($_POST['name']);
-    if (!$name) {
-        # code...
-        $nameError = 'your name required';
-    }
-    $email = filterEmail($_POST['email']);
-    if (!$email) {
-        # code...
-        $emailError="your email not correct";
-    }
-    $message =  filterString($_POST['message']);
-    if (!$message) {
-        # code...
-        $massegeError=' your massege required!';
-    }
- 
-    $document = $_FILES['document'];
-    if (!$document) {
-        # code...
-        $documentError= ' your file required!';
-    }
-
-    if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
-        # code...
-
-        if (upload($_FILES['document'])  === "Done") {
-            # code...
-            $folderupload = 'uploads';
-
-            if (!is_dir($folderupload)) {
-                # code...
-                mkdir($folderupload, 0775);
-            }
-            $namefile = $_FILES['document']['name'];
-
-            $filepath = $folderupload . '/' . $namefile;
-
-            if (file_exists($filepath)) {
-                # code...
-                echo "Sorry, file already exists.";
-            } else {
-                move_uploaded_file($_FILES['document']['tmp_name'], $filepath);
-            }
-        } else {
-            $documentError= upload($_FILES['document']);
-        }
-    }
-}
 ?>
 
 <div class="contianer">
@@ -142,14 +23,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">Email</label>
-                <input type="email" name="email" class="form-control"
-                    value="<?php echo $email?>" placeholder='email'>
+                <input type="email" name="email" class="form-control" value="<?php if (isset($_SESSION['contact-forms']['email'])) {
+    echo $_SESSION['contact-forms']['email'];
+}?>" placeholder='email'>
                 <span class="text-danger"><?php $emailError?></span>
             </div>
             <div class="form-group col-md-6">
                 <label for="name">name</label>
-                <input type="text" value="<?php echo $name?>"
-                    name="name" class="form-control" placeholder='name'>
+                <input type="text" value="<?php if (isset($_SESSION['contact-forms']['name'])) {
+    echo $_SESSION['contact-forms']['name'];
+}?>" name="name" class="form-control" placeholder='name'>
                 <span class="text-danger"><?php echo $nameError?></span>
             </div>
         </div>
@@ -157,12 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-group col-md-6">
                 <label for="document">Doucment</label>
                 <input type="file" class="form-control" name="document">
-                <span class="text-danger"><?php echo $documentError?></span>
+                <span class="text-danger"><?php $documentError?></span>
             </div>
             <div class="form-group col-md-6">
                 <label for="Message">Message</label>
-                <textarea name="message" class="form-control"
-                    placeholder='message'> <?php echo $message?></textarea>
+                <textarea name="message" class="form-control" placeholder='message'> <?php if (isset($_SESSION['contact-forms']['message'])) {
+    echo $_SESSION['contact-forms']['message'];
+}?></textarea>
                 <span class="text-danger"><?php echo $massegeError?></span>
             </div>
         </div>
