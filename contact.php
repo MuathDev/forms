@@ -41,14 +41,21 @@ function upload($filedocument)
         'gif'=>'image/gif'
     ];
 
-    $maxsize = 1*1024;
+    $maxsize = 780*1024;
     $byte= "byte";
 
     //for real file extinsion  uplode on serve
     $fileupload =  mime_content_type($filedocument['tmp_name']);
   
+    //if file  empte
+    if (empty($fileupload)) {
+        # code...
+        return false;
+    }
+    
     //file size upload
     $filesizeupload= $filedocument['size'];
+
 
     if (!in_array($fileupload, $filesallowed)) {
         return "sorry the file not work";
@@ -65,7 +72,7 @@ $nameError=' ';
 $documentError=' ';
 $massegeError=" ";
 
-$name = $email = $message = " ";
+$name = $email = $message = $document = " ";
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -88,17 +95,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         # code...
         $massegeError=' your massege required!';
     }
+ 
+    $document = $_FILES['document'];
+    if (!$document) {
+        # code...
+        $documentError= ' your file required!';
 
-
+    }
 
     if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
         # code...
+
         if (upload($_FILES['document'])  === "Done") {
             # code...
-            echo "You have been successfuly uploaded";
-        } else {
+            $folderupload = 'fileupload';
+
+            if (!is_dir($folderupload)) {
+                # code...
+                mkdir($folderupload,0775);
+            }
+                $namefile = $_FILES['document']['name'];
+
+                $filepath = $folderupload . '/' . $namefile;
+
+                if (file_exists($filepath)){
+                    # code...
+                    echo "Sorry, file already exists.";
+
+                }else {
+                    
+                    move_uploaded_file($_FILES['document']['tmp_name'],$filepath);
+
+                }
+
+            
+        }else{
             $documentError= upload($_FILES['document']);
         }
+
     }
 }
 ?>
@@ -129,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="document">Doucment</label>
-                <input type="file" class="form-control" name="document">
+                <input type="file" class="form-control" name="document" >
                 <span class="text-danger"><?php echo $documentError?></span>
             </div>
             <div class="form-group col-md-6">
