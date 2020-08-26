@@ -4,10 +4,7 @@ require_once 'layout/header.php';
 
 require_once('include/uploader.php');
 
-
-if (isset($_SESSION['contact-forms'])) {
-    print_r($_SESSION['contact-forms']);
-}
+ 
 
 ?>
 
@@ -26,7 +23,7 @@ if (isset($_SESSION['contact-forms'])) {
                 <input type="email" name="email" class="form-control" value="<?php if (isset($_SESSION['contact-forms']['email'])) {
     echo $_SESSION['contact-forms']['email'];
 }?>" placeholder='email'>
-                <span class="text-danger"><?php $emailError?></span>
+                <span class="text-danger"><?php echo $emailError?></span>
             </div>
             <div class="form-group col-md-6">
                 <label for="name">name</label>
@@ -40,7 +37,7 @@ if (isset($_SESSION['contact-forms'])) {
             <div class="form-group col-md-6">
                 <label for="document">Doucment</label>
                 <input type="file" class="form-control" name="document">
-                <span class="text-danger"><?php $documentError?></span>
+                <span class="text-danger"><?php echo $documentError?></span>
             </div>
             <div class="form-group col-md-6">
                 <label for="Message">Message</label>

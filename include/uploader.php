@@ -142,8 +142,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    if (!$emailError && !$nameError) {
+    if ($documentError == " " &&  $nameError ==  " " && $massegeError == " " && $emailError == " ") {
         # code...
-        unset($_SESSION['contact-forms']);
+        if (mail($config['email'], "You have messge", $message)) {
+            # code...
+            session_destroy();
+            header('Location: contact.php');
+        } else {
+            echo "email error";
+        }
     }
 }
